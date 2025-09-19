@@ -190,8 +190,41 @@ $(document).ready(function() {
     url: 'https://smileschool-api.hbtn.info/latest-videos',
     method: 'GET',
     success: function(data) {
-      const carousel = new GenericCarousel('#latest-carousel', 4);
-      carousel.setItems(data);
+      if (data && data.length > 0) {
+        // Remplacer le carousel par une grille simple
+        let html = '<div class="row">';
+        data.forEach((item, index) => {
+          html += `
+            <div class="col-lg-3 col-md-6 col-sm-12 mb-4">
+              <div class="card">
+                <img src="${item.thumb_url}" class="card-img-top" alt="Video thumbnail" style="width: 100%; height: 200px; object-fit: cover;" onerror="this.src='images/thumbnail_1.jpg';" />
+                <div class="card-img-overlay text-center">
+                  <img src="images/play.png" alt="Play" width="64px" class="align-self-center play-overlay" />
+                </div>
+                <div class="card-body">
+                  <h5 class="card-title font-weight-bold">${item.title || 'Untitled'}</h5>
+                  <p class="card-text text-muted">${item['sub-title'] || 'No description'}</p>
+                  <div class="creator d-flex align-items-center">
+                    <img src="${item.author_pic_url || 'images/profile_1.jpg'}" alt="Creator" width="30px" class="rounded-circle" onerror="this.src='images/profile_1.jpg';" />
+                    <h6 class="pl-3 m-0 main-color">${item.author || 'Unknown'}</h6>
+                  </div>
+                  <div class="info pt-3 d-flex justify-content-between">
+                    <div class="rating">
+                      ${generateStars(item.star || 0)}
+                    </div>
+                    <span class="main-color">${item.duration || '0 min'}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          `;
+        });
+        html += '</div>';
+        
+        $('#latest-track').html(html);
+      } else {
+        $('#latest-track').html('<div class="text-center">No latest videos found</div>');
+      }
     },
     error: function() {
       $('#latest-track').html('<div class="text-center">Error loading latest videos</div>');
