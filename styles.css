@@ -172,6 +172,12 @@
   }
 }
 
+@media screen and (max-width: 768px) {
+  .hero h1 {
+    font-size: 80px;
+  }
+}
+
 @media screen and (max-width: 575px) {
   .hero h1 {
     font-size: 61px;
