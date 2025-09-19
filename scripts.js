@@ -1,5 +1,4 @@
 $(document).ready(function() {
-  // Load quotes
   $.ajax({
     url: 'https://smileschool-api.hbtn.info/quotes',
     method: 'GET',
@@ -37,7 +36,6 @@ $(document).ready(function() {
     }
   });
 
-  // Generic Carousel Class
   class GenericCarousel {
     constructor(containerId, itemsPerView = 4) {
       this.container = $(containerId);
@@ -132,7 +130,6 @@ $(document).ready(function() {
     }
   }
 
-  // Load popular tutorials
   $.ajax({
     url: 'https://smileschool-api.hbtn.info/popular-tutorials',
     method: 'GET',
@@ -142,6 +139,18 @@ $(document).ready(function() {
     },
     error: function() {
       $('#popular-track').html('<div class="text-center">Error loading tutorials</div>');
+    }
+  });
+
+  $.ajax({
+    url: 'https://smileschool-api.hbtn.info/latest-videos',
+    method: 'GET',
+    success: function(data) {
+      const carousel = new GenericCarousel('#latest-carousel', 4);
+      carousel.setItems(data);
+    },
+    error: function() {
+      $('#latest-track').html('<div class="text-center">Error loading latest videos</div>');
     }
   });
 });
