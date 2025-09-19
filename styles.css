@@ -55,6 +55,55 @@
   100% { transform: rotate(360deg); }
 }
 
+/* Generic Carousel Styles */
+.generic-carousel {
+  position: relative;
+  overflow: hidden;
+}
+
+.generic-carousel .carousel-track {
+  display: flex;
+  transition: transform 0.5s ease;
+}
+
+.generic-carousel .carousel-item {
+  flex: 0 0 auto;
+  width: 100%;
+}
+
+.generic-carousel .carousel-controls {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+}
+
+.generic-carousel .carousel-control-prev {
+  left: -60px;
+}
+
+.generic-carousel .carousel-control-next {
+  right: -60px;
+}
+
+@media screen and (max-width: 768px) {
+  .generic-carousel .carousel-control-prev {
+    left: -30px;
+  }
+  .generic-carousel .carousel-control-next {
+    right: -30px;
+  }
+}
+
+@media screen and (max-width: 576px) {
+  .generic-carousel .carousel-control-prev {
+    left: -15px;
+  }
+  .generic-carousel .carousel-control-next {
+    right: -15px;
+  }
+}
+
 /* Header / Hero Styles */
 
 .header {

@@ -1,4 +1,5 @@
 $(document).ready(function() {
+  // Load quotes
   $.ajax({
     url: 'https://smileschool-api.hbtn.info/quotes',
     method: 'GET',
@@ -33,6 +34,114 @@ $(document).ready(function() {
     },
     error: function() {
       $('#quotes-carousel').html('<div class="text-center text-white">Error loading quotes</div>');
+    }
+  });
+
+  // Generic Carousel Class
+  class GenericCarousel {
+    constructor(containerId, itemsPerView = 4) {
+      this.container = $(containerId);
+      this.track = this.container.find('.carousel-track');
+      this.items = [];
+      this.currentIndex = 0;
+      this.itemsPerView = itemsPerView;
+      this.itemWidth = 100 / this.itemsPerView;
+      
+      this.init();
+    }
+    
+    init() {
+      this.setupControls();
+      this.updateTrack();
+    }
+    
+    setupControls() {
+      const prevBtn = this.container.find('.carousel-control-prev');
+      const nextBtn = this.container.find('.carousel-control-next');
+      
+      prevBtn.on('click', () => this.prev());
+      nextBtn.on('click', () => this.next());
+    }
+    
+    setItems(items) {
+      this.items = items;
+      this.currentIndex = 0;
+      this.renderItems();
+      this.updateTrack();
+    }
+    
+    renderItems() {
+      this.track.empty();
+      
+      this.items.forEach((item, index) => {
+        const itemHtml = `
+          <div class="carousel-item" style="width: ${this.itemWidth}%">
+            <div class="card">
+              <img src="${item.thumbnail}" class="card-img-top" alt="Video thumbnail" />
+              <div class="card-img-overlay text-center">
+                <img src="images/play.png" alt="Play" width="64px" class="align-self-center play-overlay" />
+              </div>
+              <div class="card-body">
+                <h5 class="card-title font-weight-bold">${item.title}</h5>
+                <p class="card-text text-muted">${item.subtitle}</p>
+                <div class="creator d-flex align-items-center">
+                  <img src="${item.author.pic}" alt="Creator" width="30px" class="rounded-circle" />
+                  <h6 class="pl-3 m-0 main-color">${item.author.name}</h6>
+                </div>
+                <div class="info pt-3 d-flex justify-content-between">
+                  <div class="rating">
+                    ${this.generateStars(item.stars)}
+                  </div>
+                  <span class="main-color">${item.duration}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+        this.track.append(itemHtml);
+      });
+    }
+    
+    generateStars(rating) {
+      let stars = '';
+      for (let i = 1; i <= 5; i++) {
+        const starType = i <= rating ? 'star_on' : 'star_off';
+        stars += `<img src="images/${starType}.png" alt="star" width="15px" />`;
+      }
+      return stars;
+    }
+    
+    updateTrack() {
+      const translateX = -(this.currentIndex * this.itemWidth);
+      this.track.css('transform', `translateX(${translateX}%)`);
+    }
+    
+    prev() {
+      if (this.currentIndex > 0) {
+        this.currentIndex--;
+        this.updateTrack();
+      }
+    }
+    
+    next() {
+      const maxIndex = Math.max(0, this.items.length - this.itemsPerView);
+      if (this.currentIndex < maxIndex) {
+        this.currentIndex++;
+        this.updateTrack();
+      }
+    }
+  }
+
+  // Load popular tutorials
+  $.ajax({
+    url: 'https://smileschool-api.hbtn.info/popular-tutorials',
+    method: 'GET',
+    success: function(data) {
+      const carousel = new GenericCarousel('#popular-carousel', 4);
+      carousel.setItems(data);
+    },
+    error: function() {
+      $('#popular-track').html('<div class="text-center">Error loading tutorials</div>');
     }
   });
 });
